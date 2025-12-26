@@ -16,15 +16,21 @@ program
 program
     .command('commit')
     .description('Generate a context-aware commit message')
-    .action(async () => {
-        await generateCommitMessage();
+    .option('--no-tradeoffs', 'Omit the Trade-offs section')
+    .option('--ai-attribution', 'Include AI attribution footer')
+    .option('--dry-run', 'Print message and exit')
+    .action(async (options) => {
+        await generateCommitMessage(options);
     });
 
 program
     .command('pr')
     .description('Generate a context-aware PR description')
-    .action(async () => {
-        await generatePRDescription();
+    .option('--no-tradeoffs', 'Omit the Trade-offs section')
+    .option('--ai-attribution', 'Include AI attribution footer')
+    .option('--dry-run', 'Print message and exit')
+    .action(async (options) => {
+        await generatePRDescription(options);
     });
 
 program.parse(process.argv);

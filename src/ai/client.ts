@@ -7,3 +7,7 @@ export function getOpenAIClient(): OpenAI {
     }
     return new OpenAI({ apiKey });
 }
+
+export function getModel(): string {
+    return process.env.OPENAI_MODEL || 'gpt-4o-mini';
+}
