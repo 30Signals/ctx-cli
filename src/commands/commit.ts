@@ -2,7 +2,7 @@ import inquirer from 'inquirer';
 import * as tmp from 'tmp';
 import * as fs from 'fs';
 import * as child_process from 'child_process';
-import { getStagedDiff } from '../context/git';
+import { getStagedDiff, hasUnstagedChanges, stageAll } from '../context/git';
 import { getAntigravityContext } from '../context/antigravity';
 import { getOpenAIClient, getModel } from '../ai/client';
 import simpleGit from 'simple-git';
@@ -13,14 +13,33 @@ interface CommitOptions {
     tradeOffs?: boolean;
     aiAttribution?: boolean;
     dryRun?: boolean;
+    all?: boolean;
 }
 
 export async function generateCommitMessage(options: CommitOptions = { tradeOffs: true, aiAttribution: false }) {
+    // 0. Handle --all (Auto-Stage)
+    if (options.all) {
+        console.log('Staging all changes...');
+        await stageAll();
+    }
+
     // 1. Get Staged Diff
     const diff = await getStagedDiff();
     if (!diff) {
-        console.error('No staged changes found. Please stage files with "git add" first.');
+        const unstaged = await hasUnstagedChanges();
+        if (unstaged) {
+            console.error('\n⚠️  No STAGED changes found, but you have UNSTAGED changes.');
+            console.error('   Tip: Use "git add <files>" to stage, or "npx ctx commit --all" to commit everything.\n');
+        } else {
+            console.error('No changes found. Please stage files with "git add" first.');
+        }
         return;
+    }
+
+    // Warning for unstaged changes (if not using --all)
+    if (!options.all && await hasUnstagedChanges()) {
+        console.warn('\n⚠️  Warning: You have unstaged changes that will NOT be included in this commit.');
+        console.warn('   (Use "npx ctx commit --all" to include them)\n');
     }
 
     // 2. Get AI Context

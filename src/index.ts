@@ -19,6 +19,7 @@ program
     .option('--no-tradeoffs', 'Omit the Trade-offs section')
     .option('--ai-attribution', 'Include AI attribution footer')
     .option('--dry-run', 'Print message and exit')
+    .option('-a, --all', 'Stage all changes before committing')
     .action(async (options) => {
         await generateCommitMessage(options);
     });
