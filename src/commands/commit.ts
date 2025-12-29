@@ -3,7 +3,8 @@ import * as tmp from 'tmp';
 import * as fs from 'fs';
 import * as child_process from 'child_process';
 import { getStagedDiff, hasUnstagedChanges, stageAll } from '../context/git';
-import { getAntigravityContext } from '../context/antigravity';
+import { getIntentContext } from '../services/intent-service';
+import { buildContextPrompt } from '../services/prompt-builder';
 import { getOpenAIClient, getModel } from '../ai/client';
 import simpleGit from 'simple-git';
 
@@ -43,22 +44,10 @@ export async function generateCommitMessage(options: CommitOptions = { tradeOffs
     }
 
     // 2. Get AI Context
-    const context = await getAntigravityContext();
+    const context = await getIntentContext();
 
     // 3. Construct Prompt
-    let promptContext = '';
-    if (context) {
-        promptContext = `
-ANTIGRAVITY CONTEXT:
-Task Status:
-${context.taskContent}
-
-Implementation Plan:
-${context.planContent}
-`;
-    } else {
-        promptContext = 'No active AI session context found. Rely solely on the diff.';
-    }
+    const promptContext = buildContextPrompt(context);
 
     // Adjust prompt based on options
     const tradeOffInstruction = options.tradeOffs !== false
