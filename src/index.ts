@@ -10,7 +10,7 @@ const program = new Command();
 
 program
     .name('ctx')
-    .description('Antigravity Context CLI - AI-powered commit and PR generation')
+    .description('Context CLI - AI-powered commit and PR generation')
     .version('1.0.0');
 
 program

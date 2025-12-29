@@ -53,6 +53,6 @@ export function getModel(): string {
         }
         return deployment;
     } else {
-        return process.env.OPENAI_MODEL || 'gpt-4o-mini';
+        return process.env.OPENAI_MODEL || 'gpt-5-mini';
     }
 }

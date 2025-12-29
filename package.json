@@ -1,21 +1,33 @@
 {
   "name": "ctx-cli",
-  "version": "1.0.0",
+  "version": "0.2.1",
   "description": "CLI tool for generating context-aware commit messages and PR descriptions.",
   "main": "dist/index.js",
   "bin": {
     "ctx": "./dist/index.js"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    ".env.example"
+  ],
   "scripts": {
     "build": "tsc",
+    "prepare": "npm run build",
     "start": "ts-node src/index.ts",
-    "dev": "ts-node src/index.ts"
+    "dev": "ts-node src/index.ts",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "cli",
     "git",
     "ai",
-    "context"
+    "context",
+    "commit",
+    "pr",
+    "openai",
+    "llm"
   ],
   "author": "",
   "license": "ISC",
@@ -34,6 +46,6 @@
     "@types/node": "^20.11.20",
     "@types/tmp": "^0.2.6",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.9.3"
   }
 }
