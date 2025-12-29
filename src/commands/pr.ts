@@ -6,6 +6,7 @@ import { getBranchDiff } from '../context/git';
 import { getIntentContext } from '../services/intent-service';
 import { buildContextPrompt } from '../services/prompt-builder';
 import { getOpenAIClient, getModel } from '../ai/client';
+import { calculateCost } from '../services/token-cost';
 
 interface PROptions {
     tradeOffs?: boolean;
@@ -83,6 +84,12 @@ Generate the PR description.
         });
 
         prDescription = completion.choices[0].message.content || '';
+        const usage = (completion as any).usage;
+        if (usage) {
+            const cost = calculateCost(getModel(), usage);
+            console.log(`Tokens used: ${usage.total_tokens} (Prompt: ${usage.prompt_tokens}, Completion: ${usage.completion_tokens})`);
+            console.log(`Estimated cost: $${cost.toFixed(4)}`);
+        }
 
     } catch (error: any) {
         console.error('Error generating PR description:', error.message);
