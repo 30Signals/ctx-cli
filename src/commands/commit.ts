@@ -16,6 +16,7 @@ interface CommitOptions {
     aiAttribution?: boolean;
     dryRun?: boolean;
     all?: boolean;
+    context?: string;
 }
 
 export async function generateCommitMessage(options: CommitOptions = { tradeOffs: true, aiAttribution: false }) {
@@ -48,7 +49,7 @@ export async function generateCommitMessage(options: CommitOptions = { tradeOffs
     const context = await getIntentContext();
 
     // 3. Construct Prompt
-    const promptContext = buildContextPrompt(context);
+    const promptContext = buildContextPrompt(context, options.context);
 
     // Adjust prompt based on options
     const tradeOffInstruction = options.tradeOffs !== false

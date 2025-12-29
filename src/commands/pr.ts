@@ -12,6 +12,7 @@ interface PROptions {
     tradeOffs?: boolean;
     aiAttribution?: boolean;
     dryRun?: boolean;
+    context?: string;
 }
 
 export async function generatePRDescription(options: PROptions = { tradeOffs: true, aiAttribution: false }) {
@@ -26,7 +27,7 @@ export async function generatePRDescription(options: PROptions = { tradeOffs: tr
     const context = await getIntentContext();
 
     // 3. Construct Prompt
-    const promptContext = buildContextPrompt(context);
+    const promptContext = buildContextPrompt(context, options.context);
 
     // Adjust prompt based on options
     const tradeOffInstruction = options.tradeOffs !== false
