@@ -23,14 +23,30 @@ A CLI tool that parses intent artifacts and code deltas from any AI coding assis
     ```
 
 2.  **Configure API Key**:
-    Create a `.env` file in the root directory:
+    Create a `.env` file in the root directory.
+    
+    **For Standard OpenAI:**
     ```env
     OPENAI_API_KEY=sk-your-api-key-here
+    OPENAI_MODEL=gpt-4o-mini
+    ```
     
-    # Optional: Specify which AI assistant to use (auto-detect if not set)
+    **For Azure OpenAI:**
+    ```env
+    AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com
+    AZURE_OPENAI_API_KEY=your-azure-api-key
+    AZURE_OPENAI_DEPLOYMENT=your-deployment-name
+    AZURE_OPENAI_API_VERSION=2024-02-15-preview
+    ```
+    
+    > **Note**: The tool automatically detects which provider to use. If `AZURE_OPENAI_ENDPOINT` is set, it will use Azure OpenAI; otherwise, it uses standard OpenAI.
+    
+    **Optional Settings:**
+    ```env
+    # Specify which AI assistant to use (auto-detect if not set)
     # INTENT_PROVIDER=antigravity
     
-    # Optional: Custom Antigravity brain directory
+    # Custom Antigravity brain directory
     # ANTIGRAVITY_BRAIN_DIR=C:/Users/username/.gemini/antigravity/brain
     ```
 
