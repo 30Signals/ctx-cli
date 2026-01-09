@@ -22,6 +22,8 @@ Install directly from the repository:
 ```bash
 git clone https://github.com/30signals/ctx-cli.git
 cd ctx-cli
+npm install
+npm run build
 npm install -g .
 ```
 
