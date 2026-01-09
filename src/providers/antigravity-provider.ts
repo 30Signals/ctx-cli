@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
 import { glob } from 'glob';
 import { IntentProvider, IntentBundle } from './types';
@@ -18,7 +19,7 @@ export class AntigravityProvider implements IntentProvider {
     constructor() {
         // Allow custom brain directory via environment variable
         this.brainDir = process.env.ANTIGRAVITY_BRAIN_DIR ||
-            'C:/Users/katro/.gemini/antigravity/brain';
+            path.join(os.homedir(), '.gemini/antigravity/brain');
     }
 
     async detect(): Promise<boolean> {
