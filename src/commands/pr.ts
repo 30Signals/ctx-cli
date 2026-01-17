@@ -2,6 +2,7 @@ import inquirer from 'inquirer';
 import * as tmp from 'tmp';
 import * as fs from 'fs';
 import * as child_process from 'child_process';
+import { execSync } from 'child_process';
 import { getBranchDiff } from '../context/git';
 import { getIntentContext } from '../services/intent-service';
 import { buildContextPrompt } from '../services/prompt-builder';
@@ -13,13 +14,91 @@ interface PROptions {
     aiAttribution?: boolean;
     dryRun?: boolean;
     context?: string;
+    base?: string;
+}
+
+function getCurrentBranch(): string {
+    try {
+        return execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf-8' }).trim();
+    } catch (error) {
+        throw new Error('Failed to get current branch');
+    }
+}
+
+function isGhCliAvailable(): boolean {
+    try {
+        execSync('gh --version', { stdio: 'ignore' });
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+function isBranchPushedToRemote(branch: string): boolean {
+    try {
+        execSync(`git rev-parse --verify origin/${branch}`, { stdio: 'ignore' });
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+function pushBranchToRemote(branch: string): boolean {
+    try {
+        console.log(`Pushing branch ${branch} to remote...`);
+        execSync(`git push -u origin ${branch}`, { stdio: 'inherit' });
+        return true;
+    } catch (error) {
+        console.error('Failed to push branch to remote');
+        return false;
+    }
+}
+
+function extractTitle(prDescription: string): string {
+    // Extract the first heading as the title
+    const lines = prDescription.split('\n');
+    for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed.startsWith('# ')) {
+            return trimmed.substring(2).trim();
+        }
+    }
+    // Fallback: use first non-empty line
+    for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed) {
+            return trimmed;
+        }
+    }
+    return 'Pull Request';
+}
+
+function createPR(title: string, body: string, baseBranch: string): boolean {
+    try {
+        console.log(`\nCreating PR to ${baseBranch}...`);
+        // Write body to temp file to handle multiline content
+        const tmpObj = tmp.fileSync({ postfix: '.md' });
+        fs.writeFileSync(tmpObj.name, body);
+
+        execSync(`gh pr create --base ${baseBranch} --title "${title}" --body-file "${tmpObj.name}"`, {
+            stdio: 'inherit'
+        });
+
+        tmpObj.removeCallback();
+        return true;
+    } catch (error) {
+        console.error('Failed to create PR');
+        return false;
+    }
 }
 
 export async function generatePRDescription(options: PROptions = { tradeOffs: true, aiAttribution: false }) {
+    const baseBranch = options.base || 'main';
+
     // 1. Get Branch Diff
-    const diff = await getBranchDiff('main');
+    const diff = await getBranchDiff(baseBranch);
     if (!diff) {
-        console.error('No changes found between HEAD and main.');
+        console.error(`No changes found between HEAD and ${baseBranch}.`);
         return;
     }
 
@@ -104,20 +183,30 @@ Generate the PR description.
     }
 
     // 5. Interactive Loop
+    const currentBranch = getCurrentBranch();
+    const ghAvailable = isGhCliAvailable();
+
     while (true) {
         console.log('\n--- Draft PR Description ---\n');
         console.log(prDescription);
         console.log('\n----------------------------\n');
 
+        const choices = [
+            { name: 'Edit (Open in Editor)', value: 'edit' },
+            { name: 'Finish (Exit)', value: 'finish' },
+            { name: 'Cancel', value: 'cancel' }
+        ];
+
+        // Add "Create PR" option if gh CLI is available
+        if (ghAvailable) {
+            choices.unshift({ name: 'Create PR on GitHub', value: 'create' });
+        }
+
         const { action } = await inquirer.prompt([{
             type: 'list',
             name: 'action',
             message: 'What would you like to do?',
-            choices: [
-                { name: 'Finish (Exit)', value: 'finish' },
-                { name: 'Edit (Open in Editor)', value: 'edit' },
-                { name: 'Cancel', value: 'cancel' }
-            ]
+            choices
         }]);
 
         if (action === 'cancel') {
@@ -128,6 +217,45 @@ Generate the PR description.
         if (action === 'finish') {
             console.log('Final output printed above.');
             break;
+        }
+
+        if (action === 'create') {
+            // Check if branch is pushed to remote
+            if (!isBranchPushedToRemote(currentBranch)) {
+                const { shouldPush } = await inquirer.prompt([{
+                    type: 'confirm',
+                    name: 'shouldPush',
+                    message: `Branch '${currentBranch}' is not pushed to remote. Push now?`,
+                    default: true
+                }]);
+
+                if (shouldPush) {
+                    if (!pushBranchToRemote(currentBranch)) {
+                        console.error('Cannot create PR without pushing the branch.');
+                        continue;
+                    }
+                } else {
+                    console.log('Cannot create PR without pushing the branch.');
+                    continue;
+                }
+            }
+
+            // Extract title and create PR
+            const title = extractTitle(prDescription);
+
+            // Remove the title from the body if it exists as a heading
+            let body = prDescription;
+            const lines = body.split('\n');
+            if (lines[0].trim().startsWith('# ')) {
+                body = lines.slice(1).join('\n').trim();
+            }
+
+            if (createPR(title, body, baseBranch)) {
+                console.log('\nPR created successfully!');
+                break;
+            } else {
+                console.error('Failed to create PR. You can try again or choose another option.');
+            }
         }
 
         if (action === 'edit') {

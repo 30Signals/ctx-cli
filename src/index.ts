@@ -32,6 +32,7 @@ program
     .option('--ai-attribution', 'Include AI attribution footer')
     .option('--dry-run', 'Print message and exit')
     .option('-c, --context <text>', 'Additional context to include in generation')
+    .option('-b, --base <branch>', 'Base branch for the PR (default: main)')
     .action(async (options) => {
         await generatePRDescription(options);
     });

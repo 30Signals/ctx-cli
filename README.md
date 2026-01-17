@@ -138,9 +138,32 @@ ctx pr
 ```
 
 **Options:**
-- `--no-tradeoffs`
-- `--ai-attribution`
+- `--no-tradeoffs`: Skip the "Trade-offs" section
+- `--ai-attribution`: Add an AI attribution footer
+- `--dry-run`: Print the generated description and exit
 - `-c`, `--context <text>`: Add custom context to include in the generation
+- `-b`, `--base <branch>`: Specify the base branch for the PR (default: main)
+
+**Examples:**
+```bash
+# Generate PR description with custom context
+ctx pr -c "Closes #456"
+
+# Generate PR description targeting a different base branch
+ctx pr --base develop
+
+# Combine multiple options
+ctx pr --base develop --context "Breaking change: API v2" --dry-run
+```
+
+**Interactive Features:**
+After generating the description, you can:
+- **Create PR on GitHub**: Automatically creates the PR using GitHub CLI (`gh`) if available
+- **Edit**: Open the description in your default editor (`$EDITOR`)
+- **Finish**: Exit and print the final description
+- **Cancel**: Abort the operation
+
+**Note**: To create PRs directly on GitHub, you need the [GitHub CLI](https://cli.github.com/) installed and authenticated (`gh auth login`).
 
 ## How it Works
 
