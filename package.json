@@ -1,6 +1,6 @@
 {
   "name": "ctx-cli",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "CLI tool for generating context-aware commit messages and PR descriptions.",
   "main": "dist/index.js",
   "bin": {

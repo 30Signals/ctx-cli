@@ -27,7 +27,7 @@ if ! command_exists git; then
 fi
 
 # Configuration
-VERSION="v0.2.1"
+VERSION="v0.2.2"
 REPO="30signals/ctx-cli"
 INSTALL_DIR=$(mktemp -d)
 
