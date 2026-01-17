@@ -2,6 +2,13 @@
 
 A CLI tool that parses intent artifacts and code deltas from any AI coding assistant to generate human-quality commit messages and PR descriptions.
 
+![ctx-cli version](https://img.shields.io/github/v/release/30signals/ctx-cli)
+
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/30signals/ctx-cli/v0.2.1/install.sh | bash
+```
+
 ## Features
 
 - **Universal AI Support**: Works with any AI coding assistant through a provider-based architecture
@@ -17,17 +24,13 @@ A CLI tool that parses intent artifacts and code deltas from any AI coding assis
 
 ## Installation
 
-Install directly from the repository:
+Run the following command in your terminal:
 
 ```bash
-git clone https://github.com/30signals/ctx-cli.git
-cd ctx-cli
-npm install
-npm run build
-npm install -g .
+curl -fsSL https://raw.githubusercontent.com/30signals/ctx-cli/v0.2.1/install.sh | bash
 ```
 
-Now you can run:
+This will install `ctx` globally on your system. After the installation is complete, you can run:
 
 ```bash
 ctx --help
@@ -190,23 +193,27 @@ See `src/providers/` for examples.
 
 ## Development
 
-### Local Setup
+### From Source
 
-1. Clone the repository and install dependencies:
+If you want to install from source or contribute to the project:
+
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/30signals/ctx-cli.git
    cd ctx-cli
+   ```
+
+2. **Install dependencies:**
+   ```bash
    npm install
    ```
 
-2. Create a `.env` file with your API keys (see Configuration section)
-
-3. Build and install globally:
+3. **Build and install globally:**
    ```bash
    npm run build
    npm install -g .
    ```
-   
+
    Now you can use `ctx` from anywhere on your system.
 
 ### Testing Changes
