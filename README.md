@@ -2,6 +2,13 @@
 
 A CLI tool that parses intent artifacts and code deltas from any AI coding assistant to generate human-quality commit messages and PR descriptions.
 
+![ctx-cli version](https://img.shields.io/github/v/release/30signals/ctx-cli)
+
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/30signals/ctx-cli/v0.2.1/install.sh | bash
+```
+
 ## Features
 
 - **Universal AI Support**: Works with any AI coding assistant through a provider-based architecture
