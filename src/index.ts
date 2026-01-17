@@ -11,7 +11,7 @@ const program = new Command();
 program
     .name('ctx')
     .description('Context CLI - AI-powered commit and PR generation')
-    .version('1.0.0');
+    .version('0.2.1');
 
 program
     .command('commit')

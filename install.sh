@@ -33,14 +33,20 @@ INSTALL_DIR=$(mktemp -d)
 
 # Clone the repository
 echo "Cloning repository..."
-git clone --depth 1 --branch "$VERSION" "https://github.com/$REPO.git" "$INSTALL_DIR"
+git clone --quiet --depth 1 --branch "$VERSION" "https://github.com/$REPO.git" "$INSTALL_DIR" 2>/dev/null
 
 # Install and build
 echo "Installing dependencies and building..."
 cd "$INSTALL_DIR"
-npm install
-npm run build
-npm install -g .
+npm install --silent
+npm run build --silent
+chmod +x dist/index.js
+
+# Use npm pack to create a tarball, then install from it
+# This ensures files are copied instead of symlinked to the temp directory
+npm pack --silent
+TARBALL=$(ls -1 *.tgz | head -1)
+npm install -g "./$TARBALL" --silent
 
 # Clean up
 echo "Cleaning up..."
