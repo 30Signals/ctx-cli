@@ -1,6 +1,7 @@
 import { IntentBundle } from '../providers/types';
 import { ProviderRegistry } from '../providers/registry';
 import { AntigravityProvider } from '../providers/antigravity-provider';
+import { ClaudeCodeProvider } from '../providers/claude-code-provider';
 import { CursorProvider } from '../providers/cursor-provider';
 import { AiderProvider } from '../providers/aider-provider';
 
@@ -17,6 +18,7 @@ export async function getIntentContext(): Promise<IntentBundle | null> {
 
     // Register all available providers
     registry.register(new AntigravityProvider());
+    registry.register(new ClaudeCodeProvider());
     registry.register(new CursorProvider());
     registry.register(new AiderProvider());
 
