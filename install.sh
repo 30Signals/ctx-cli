@@ -16,7 +16,7 @@ error()   { echo -e "${RED}[ERROR]${NC} $*" >&2; }
 fatal()   { error "$@"; exit 1; }
 
 # Configuration
-VERSION="v0.2.2"
+VERSION="v0.2.3"
 REPO="30signals/ctx-cli"
 INSTALL_DIR=""
 
