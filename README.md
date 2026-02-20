@@ -6,7 +6,7 @@ A CLI tool that parses intent artifacts and code deltas from any AI coding assis
 
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/30signals/ctx-cli/v0.2.2/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/30signals/ctx-cli/v0.2.3/install.sh | bash
 ```
 
 ## Features
