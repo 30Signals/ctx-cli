@@ -27,7 +27,7 @@ curl -fsSL https://raw.githubusercontent.com/30signals/ctx-cli/v0.2.3/install.sh
 Run the following command in your terminal:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/30signals/ctx-cli/v0.2.2/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/30signals/ctx-cli/v0.2.3/install.sh | bash
 ```
 
 This will install `ctx` globally on your system. After the installation is complete, you can run:
