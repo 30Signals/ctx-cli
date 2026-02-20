@@ -4,6 +4,8 @@ import * as dotenv from 'dotenv';
 import { generateCommitMessage } from './commands/commit';
 import { generatePRDescription } from './commands/pr';
 
+const { version } = require('../package.json');
+
 dotenv.config();
 
 const program = new Command();
@@ -11,7 +13,7 @@ const program = new Command();
 program
     .name('ctx')
     .description('Context CLI - AI-powered commit and PR generation')
-    .version('0.2.2');
+    .version(version);
 
 program
     .command('commit')
